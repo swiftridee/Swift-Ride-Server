@@ -1,95 +1,168 @@
-# Swift Ride Admin Server
+# Swift-Ride-Server
 
-This is the backend server for the Swift Ride admin dashboard, built with Node.js, Express.js, and MongoDB.
+## Overview
+
+Swift-Ride-Server is the backend server for the Swift Ride admin dashboard. It provides secure RESTful APIs for managing users, vehicles, bookings, analytics, and admin authentication. Built with Node.js, Express.js, and MongoDB, it powers the administrative operations of the Swift Ride platform.
+
+---
+
+## Tech Stack
+
+- **Runtime:** Node.js (v14+)
+- **Framework:** Express.js
+- **Database:** MongoDB (with Mongoose ODM)
+- **Authentication:** JWT (JSON Web Tokens)
+- **Validation:** Joi, express-validator
+- **Password Hashing:** bcryptjs
+- **Environment Management:** dotenv
+- **Logging:** morgan
+- **CORS:** cors
+- **Date Utilities:** moment
+- **Development Tools:** nodemon
+
+---
 
 ## Features
 
-- JWT Authentication for Admin
-- Dashboard Statistics
-- Booking Management
-- User Management
-- Vehicle Management
-- Analytics and Reports
+- **Admin Authentication:**  
+  Secure login for admin users using JWT tokens. Passwords are hashed for security.
 
-## Prerequisites
+- **Dashboard Statistics:**  
+  Aggregated statistics for vehicles, users, bookings, and revenue.
 
-- Node.js (v14 or higher)
-- MongoDB
-- npm or yarn
+- **Booking Management:**  
+  View, update, and manage all ride bookings. Change booking status and assign vehicles/users.
 
-## Setup
+- **User Management:**  
+  View all users, block/unblock users, and manage user details.
 
-1. Clone the repository
-2. Install dependencies:
+- **Vehicle Management:**  
+  Add, update, or remove vehicles. Manage vehicle details, status, and rental plans.
 
-   ```bash
-   npm install
-   ```
+- **Analytics & Reports:**  
+  Access analytics endpoints for booking trends, popular vehicles, and revenue.
 
-3. Create a `.env` file in the root directory with the following variables:
+- **Robust Security:**  
+  All admin routes are protected with JWT authentication. Sensitive data is managed via environment variables.
 
-   ```
-   PORT=5000
-   MONGODB_URI=mongodb://localhost:27017/swift-ride
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-   JWT_EXPIRE=24h
-   ADMIN_EMAIL=admin@swiftride.com
-   ADMIN_PASSWORD=admin123
-   ```
+- **Error Handling:**  
+  Global error handling middleware ensures consistent and informative API responses.
 
-4. Start the server:
-   ```bash
-   npm start
-   ```
+---
 
 ## API Endpoints
 
 ### Authentication
 
-- POST `/api/auth/admin/login` - Admin login
+- `POST /api/auth/admin/login`  
+  Authenticate an admin and receive a JWT token.
 
 ### Admin Dashboard
 
-- GET `/api/admin/dashboard` - Get dashboard statistics
-- GET `/api/admin/analytics` - Get analytics data
+- `GET /api/admin/dashboard`  
+  Retrieve dashboard statistics (counts, revenue, etc.).
+- `GET /api/admin/analytics`  
+  Get analytics data for bookings, vehicles, and revenue.
 
 ### Bookings
 
-- GET `/api/admin/bookings` - Get all bookings
-- PUT `/api/admin/bookings/:id` - Update booking status
+- `GET /api/admin/bookings`  
+  List all bookings with filters and pagination.
+- `PUT /api/admin/bookings/:id`  
+  Update the status or details of a booking.
 
 ### Users
 
-- GET `/api/admin/users` - Get all users
-- PUT `/api/admin/users/:id` - Update user status (block/unblock)
+- `GET /api/admin/users`  
+  List all users.
+- `PUT /api/admin/users/:id`  
+  Update user status (block/unblock) or details.
+
+### Vehicles
+
+- `GET /api/admin/vehicles`  
+  List all vehicles.
+- `POST /api/admin/vehicles`  
+  Add a new vehicle.
+- `PUT /api/admin/vehicles/:id`  
+  Update vehicle details.
+- `DELETE /api/admin/vehicles/:id`  
+  Remove a vehicle.
+
+---
+
+## Data Models
+
+- **User:**  
+  Stores user information, authentication details, and status.
+- **Vehicle:**  
+  Stores vehicle details, status, rental plans, and features.
+- **Booking:**  
+  Stores booking information, user/vehicle references, and status.
+
+---
 
 ## Project Structure
 
 ```
 src/
-├── config/
-│   └── config.js
-├── controllers/
-│   ├── authController.js
-│   └── adminController.js
-├── middleware/
-│   └── auth.js
-├── models/
-│   ├── User.js
-│   ├── Vehicle.js
-│   └── Booking.js
-├── routes/
-│   ├── auth.js
-│   └── admin.js
-└── server.js
+  config/         # Configuration files (e.g., DB connection)
+  controllers/    # Route logic for auth, admin, bookings, vehicles
+  middleware/     # JWT auth, error handling, etc.
+  models/         # Mongoose models (User, Vehicle, Booking)
+  routes/         # Express route definitions
+  scripts/        # Utility scripts (e.g., create admin)
+  server.js       # Entry point
 ```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- MongoDB
+
+### Setup
+
+```sh
+# Clone the repository
+git clone https://github.com/swiftridee/Swift-Ride-Server.git
+cd Swift-Ride-Server
+
+# Install dependencies
+npm install
+
+# Create a .env file in the root directory with the following variables:
+# (edit values as needed)
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/swift-ride
+JWT_SECRET=your-super-secret-jwt-key
+JWT_EXPIRE=24h
+ADMIN_EMAIL=admin@swiftride.com
+ADMIN_PASSWORD=admin123
+
+# Start the server
+npm start
+```
+
+---
 
 ## Security
 
-- All admin routes are protected with JWT authentication
-- Passwords are hashed using bcrypt
-- Environment variables are used for sensitive data
+- All admin routes require JWT authentication.
+- Passwords are securely hashed.
+- Sensitive data is managed via environment variables.
 
-## Error Handling
+---
 
-The server includes global error handling middleware that catches and processes any unhandled errors, returning appropriate error responses to the client.
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+---
+
+## License
+
+This project is licensed under the ISC License.
