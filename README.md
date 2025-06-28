@@ -42,7 +42,44 @@ This is the backend server for the Swift Ride admin dashboard, built with Node.j
    npm start
    ```
 
+## Deployment
+
+### Vercel Deployment
+
+This application is configured for Vercel deployment. See `DEPLOYMENT.md` for detailed instructions.
+
+**Quick Setup:**
+1. Set environment variables in Vercel dashboard
+2. Deploy using Vercel CLI or GitHub integration
+3. Test deployment using: `npm run test-deployment`
+
+### Environment Variables for Production
+
+Required environment variables for Vercel deployment:
+
+- `MONGODB_URI` - MongoDB connection string
+- `JWT_SECRET` - Secure JWT signing key
+- `NODE_ENV` - Set to "production"
+
 ## API Endpoints
+
+### Public Routes
+- `GET /` - Welcome message
+- `GET /api/health` - Health check
+- `GET /api/test` - Test route
+- `GET /api/vehicles` - Get all vehicles
+- `GET /api/vehicles/:id` - Get specific vehicle
+- `GET /api/bookings/availability/:vehicleId` - Check vehicle availability
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/admin/login` - Admin login
+
+### Protected Routes (Require JWT Token)
+- `GET /api/admin/*` - Admin routes
+- `POST /api/bookings` - Create booking
+- `GET /api/bookings` - Get user bookings
+- `GET /api/bookings/:id` - Get specific booking
+- `PUT /api/bookings/:id/cancel` - Cancel booking
 
 ### Authentication
 
@@ -71,17 +108,32 @@ src/
 │   └── config.js
 ├── controllers/
 │   ├── authController.js
-│   └── adminController.js
+│   ├── adminController.js
+│   ├── bookingController.js
+│   └── vehicleController.js
 ├── middleware/
-│   └── auth.js
+│   ├── auth.js
+│   └── validation.js
 ├── models/
 │   ├── User.js
 │   ├── Vehicle.js
 │   └── Booking.js
 ├── routes/
 │   ├── auth.js
-│   └── admin.js
+│   ├── admin.js
+│   ├── bookings.js
+│   └── vehicles.js
+├── utils/
+│   └── emailService.js
 └── server.js
+```
+
+## Testing
+
+Test the deployment using the provided test script:
+
+```bash
+npm run test-deployment
 ```
 
 ## Security
@@ -89,7 +141,17 @@ src/
 - All admin routes are protected with JWT authentication
 - Passwords are hashed using bcrypt
 - Environment variables are used for sensitive data
+- Improved error handling and validation
 
 ## Error Handling
 
 The server includes global error handling middleware that catches and processes any unhandled errors, returning appropriate error responses to the client.
+
+## Recent Fixes
+
+- Fixed environment variable configuration for Vercel deployment
+- Improved server configuration for serverless environment
+- Enhanced error handling and logging
+- Added health check and test routes
+- Updated Vercel configuration for better routing
+- Improved authentication middleware with better error messages
