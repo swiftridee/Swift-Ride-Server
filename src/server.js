@@ -28,9 +28,7 @@ app.use((req, res, next) => {
 
 // Welcome route
 app.get("/", (req, res) => {
-  res.json({
-    message: `Server is running in ${process.env.NODE_ENV === "production" ? "PRODUCTION" : "DEVELOPMENT"} mode`
-  });
+  res.send("Server is running");
 });
 
 // Routes
