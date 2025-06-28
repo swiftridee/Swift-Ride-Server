@@ -28,7 +28,9 @@ app.use((req, res, next) => {
 
 // Welcome route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to SwiftRide API" });
+  res.json({
+    message: `Server is running in ${process.env.NODE_ENV === "production" ? "PRODUCTION" : "DEVELOPMENT"} mode`
+  });
 });
 
 // Routes
@@ -61,16 +63,28 @@ mongoose
   .connect(config.MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB");
-    // Start server
-    const PORT = config.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-      console.log("Available routes:");
-      console.log("- /api/auth/*");
-      console.log("- /api/admin/*");
-      console.log("- /api/bookings/*");
-      console.log("- /api/vehicles/*");
-    });
+    // Start server only if in production, otherwise just log
+    if (process.env.NODE_ENV === "production") {
+      const PORT = config.PORT || 5000;
+      app.listen(PORT, () => {
+        console.log(`Server is running in PRODUCTION on port ${PORT}`);
+        console.log("Available routes:");
+        console.log("- /api/auth/*");
+        console.log("- /api/admin/*");
+        console.log("- /api/bookings/*");
+        console.log("- /api/vehicles/*");
+      });
+    } else {
+      const PORT = config.PORT || 5000;
+      app.listen(PORT, () => {
+        console.log(`Server is running in DEVELOPMENT on port ${PORT}`);
+        console.log("Available routes:");
+        console.log("- /api/auth/*");
+        console.log("- /api/admin/*");
+        console.log("- /api/bookings/*");
+        console.log("- /api/vehicles/*");
+      });
+    }
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
