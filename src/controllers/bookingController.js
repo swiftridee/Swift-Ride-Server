@@ -1,6 +1,7 @@
 const Booking = require("../models/Booking");
 const Vehicle = require("../models/Vehicle");
 const User = require("../models/User");
+const emailService = require("../utils/emailService");
 
 // @desc    Create a new booking
 // @route   POST /api/bookings
@@ -73,7 +74,7 @@ exports.createBooking = async (req, res) => {
 
     console.log("Creating booking with user:", req.user._id);
 
-    // Create booking
+    // Create booking with confirmed status
     const booking = await Booking.create({
       user: req.user._id,
       vehicle: vehicleId,
@@ -81,7 +82,7 @@ exports.createBooking = async (req, res) => {
       endDate,
       includeDriver,
       price: totalPrice,
-      status: "pending",
+      status: "confirmed", // Set status as confirmed
       pickupLocation,
       dropLocation,
       notes,
@@ -95,8 +96,14 @@ exports.createBooking = async (req, res) => {
           },
     });
 
-    // Populate vehicle details for the response
-    await booking.populate("vehicle", "name brand vehicleType image");
+    // Populate vehicle details for the response and email
+    await booking.populate([
+      { path: "vehicle", select: "name brand vehicleType image" },
+      { path: "user", select: "name email" },
+    ]);
+
+    // Send confirmation email
+    await emailService.sendBookingConfirmation(booking, booking.user);
 
     console.log("Booking created successfully:", booking._id);
 

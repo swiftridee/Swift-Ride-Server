@@ -30,6 +30,10 @@ const bookingSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "cancelled", "completed"],
       default: "pending",
     },
+    emailSent: {
+      type: Boolean,
+      default: false,
+    },
     startDate: {
       type: Date,
       required: true,
