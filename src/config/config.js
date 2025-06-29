@@ -14,7 +14,7 @@ module.exports = {
   // EMAIL_FROM: process.env.EMAIL_FROM,
   PORT: 5000,
   MONGODB_URI:
-    "mongodb+srv://usmanbaig1573:Password@cluster1.flxilna.mongodb.net/swift-ride",
+    "mongodb+srv://contactswiftride:HXOGJlkV3neI7XXe@cluster0.jqqrohm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
   JWT_SECRET: "your-secret-key",
   JWT_EXPIRE: "24h",
   ADMIN_EMAIL: "admin@swiftride.com",
