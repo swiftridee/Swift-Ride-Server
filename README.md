@@ -62,6 +62,7 @@ This is the backend server for the Swift Ride admin dashboard, built with Node.j
 
 - GET `/api/admin/users` - Get all users
 - PUT `/api/admin/users/:id` - Update user status (block/unblock)
+- DELETE `/api/admin/users/:id` - Delete user by ID
 
 ## Project Structure
 

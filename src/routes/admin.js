@@ -8,6 +8,7 @@ const {
   updateBookingStatus,
   getUsers,
   updateUserStatus,
+  deleteUser,
   getAnalytics,
   getStats,
 } = require("../controllers/adminController");
@@ -37,6 +38,7 @@ router.put("/bookings/:id", updateBookingStatus);
 // User routes
 router.get("/users", getUsers);
 router.put("/users/:id", updateUserStatus);
+router.delete("/users/:id", deleteUser);
 
 // Vehicle routes
 router.get("/vehicles", getVehicles);
