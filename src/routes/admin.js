@@ -8,6 +8,7 @@ const {
   updateBookingStatus,
   getUsers,
   updateUserStatus,
+  updateUserDetails,
   deleteUser,
   getAnalytics,
   getStats,
@@ -38,6 +39,7 @@ router.put("/bookings/:id", updateBookingStatus);
 // User routes
 router.get("/users", getUsers);
 router.put("/users/:id", updateUserStatus);
+router.put("/users/:id/details", updateUserDetails);
 router.delete("/users/:id", deleteUser);
 
 // Vehicle routes

@@ -370,6 +370,55 @@ exports.getStats = async (req, res) => {
   }
 };
 
+// @desc    Update user details (name, city, cnic, gender)
+// @route   PUT /api/admin/users/:id/details
+// @access  Private/Admin
+exports.updateUserDetails = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { status,name, city, cnic, gender } = req.body;
+
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update user fields
+    if (name) user.name = name;
+    if (city) user.city = city;
+    if (cnic) user.cnic = cnic;
+    if (status) user.status = status;
+    if (gender) user.gender = gender;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User details updated successfully",
+      data: {
+        userId: user._id,
+        name: user.name,
+        email: user.email,
+        city: user.city,
+        cnic: user.cnic,
+        gender: user.gender,
+        role: user.role,
+        status: user.status,
+      },
+    });
+  } catch (err) {
+    console.error("Error updating user details:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 // @desc    Delete user by ID
 // @route   DELETE /api/admin/users/:id
 // @access  Private/Admin
