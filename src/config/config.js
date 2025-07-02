@@ -21,7 +21,7 @@ module.exports = {
   ADMIN_PASSWORD: "admin123",
   EMAIL_HOST: "smtp.gmail.com",
   EMAIL_PORT: 587,
-  EMAIL_USER: "your-email@gmail.com",
-  EMAIL_PASS: "your-app-specific-password (16 characters)",
-  EMAIL_FROM: "Swift Ride <your-email@gmail.com>",
+  EMAIL_USER: "contactswiftride@gmail.com",
+  EMAIL_PASS: "cdrp mnzo dyep iscd",
+  EMAIL_FROM: "Swift Ride <contactswiftride@gmail.com>",
 };
