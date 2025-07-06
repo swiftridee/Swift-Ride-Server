@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 const User = require("../models/User");
-const { sendPasswordResetOTP, sendPasswordResetConfirmation } = require("../utils/emailService");
+const { sendPasswordResetOTP, sendPasswordResetConfirmation, sendWelcomeEmail } = require("../utils/emailService");
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -13,7 +13,9 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, city, cnic } = req.body;
+    const { name, email, password, city, cnic, gender } = req.body;
+
+    console.log("Registration request body:", { name, email, city, cnic, gender });
 
     // Validate required fields
     if (!name || !email || !password || !city) {
@@ -32,9 +34,18 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Check if CNIC is already registered
-    if (cnic) {
-      const existingCNIC = await User.findOne({ cnic });
+    // Check if CNIC is already registered (only if CNIC is provided)
+    if (cnic && cnic.trim() !== "") {
+      // Validate CNIC format (13 digits)
+      const cnicRegex = /^\d{13}$/;
+      if (!cnicRegex.test(cnic.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: "CNIC must be exactly 13 digits",
+        });
+      }
+
+      const existingCNIC = await User.findOne({ cnic: cnic.trim() });
       if (existingCNIC) {
         return res.status(400).json({
           success: false,
@@ -43,15 +54,38 @@ exports.register = async (req, res) => {
       }
     }
 
-    // Create new user
-    const user = await User.create({
-      name,
-      email,
+    // Prepare user data
+    const userData = {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
       password,
-      city,
-      cnic: cnic || null,
+      city: city.trim(),
       status: "active",
-    });
+    };
+
+    // Add CNIC if provided and not empty
+    if (cnic && cnic.trim() !== "") {
+      userData.cnic = cnic.trim();
+    }
+
+    // Add gender if provided
+    if (gender) {
+      userData.gender = gender;
+    }
+
+    console.log("Creating user with data:", userData);
+
+    // Create new user
+    const user = await User.create(userData);
+
+    // Send welcome email (non-blocking)
+    try {
+      await sendWelcomeEmail(user);
+      console.log("Welcome email sent successfully to:", user.email);
+    } catch (emailError) {
+      console.error("Failed to send welcome email:", emailError.message);
+      // Don't fail registration if email fails
+    }
 
     // Generate token
     const token = generateToken(user._id);
