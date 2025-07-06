@@ -171,3 +171,88 @@ exports.sendPasswordResetConfirmation = async (user) => {
     return false;
   }
 };
+
+// Send welcome email to new user
+exports.sendWelcomeEmail = async (user) => {
+  try {
+    console.log("Attempting to send welcome email:");
+    console.log("User:", { name: user.name, email: user.email });
+
+    const mailOptions = {
+      from: config.EMAIL_FROM,
+      to: user.email,
+      subject: "Welcome to Swift Ride! 🚗",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
+          <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #007bff; margin: 0; font-size: 28px;">🚗 Welcome to Swift Ride!</h1>
+              <p style="color: #6c757d; margin: 10px 0 0 0;">Your journey starts here</p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+              <h2 style="color: #333; margin-bottom: 15px;">Hello ${user.name}! 👋</h2>
+              <p style="color: #555; line-height: 1.6; margin-bottom: 15px;">
+                Welcome to Swift Ride! We're excited to have you as part of our community. 
+                Your account has been successfully created and you're now ready to explore our 
+                premium vehicle rental services.
+              </p>
+            </div>
+            
+            <div style="background-color: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+              <h3 style="color: #1976d2; margin-top: 0;">🎉 What's Next?</h3>
+              <ul style="color: #555; line-height: 1.8; margin: 0; padding-left: 20px;">
+                <li><strong>Browse Vehicles:</strong> Explore our wide range of vehicles</li>
+                <li><strong>Make Bookings:</strong> Reserve your preferred vehicle</li>
+                <li><strong>Track Rentals:</strong> Monitor your booking status</li>
+                <li><strong>Get Support:</strong> Contact us anytime for assistance</li>
+              </ul>
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+              <h3 style="color: #333; margin-top: 0;">🔐 Account Security</h3>
+              <p style="color: #555; line-height: 1.6; margin-bottom: 10px;">
+                Your account security is important to us. Here are some tips:
+              </p>
+              <ul style="color: #555; line-height: 1.6; margin: 0; padding-left: 20px;">
+                <li>Keep your password secure and unique</li>
+                <li>Never share your login credentials</li>
+                <li>Log out from shared devices</li>
+                <li>Contact us immediately if you notice any suspicious activity</li>
+              </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="#" style="background-color: #007bff; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                Start Exploring 🚀
+              </a>
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; text-align: center;">
+              <p style="color: #6c757d; margin: 0; font-size: 14px;">
+                If you have any questions, feel free to contact our support team.
+              </p>
+              <p style="color: #6c757d; margin: 10px 0 0 0; font-size: 14px;">
+                Thank you for choosing Swift Ride! 🚗
+              </p>
+            </div>
+          </div>
+        </div>
+      `,
+    };
+
+    console.log("Sending welcome email with options:", mailOptions);
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Welcome email sent successfully:", info.response);
+    console.log("Message ID:", info.messageId);
+
+    return true;
+  } catch (error) {
+    console.error("Error sending welcome email:", error);
+    if (error.code === "EAUTH") {
+      console.error("Authentication failed. Please check email credentials.");
+    }
+    return false;
+  }
+};
