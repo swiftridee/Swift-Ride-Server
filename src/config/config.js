@@ -22,6 +22,6 @@ module.exports = {
   EMAIL_HOST: "smtp.gmail.com",
   EMAIL_PORT: 587,
   EMAIL_USER: "contactswiftride@gmail.com",
-  EMAIL_PASS: "cdrp mnzo dyep iscd",
+  EMAIL_PASS: "tovr clqq nysw aeev",
   EMAIL_FROM: "Swift Ride <contactswiftride@gmail.com>",
 };
