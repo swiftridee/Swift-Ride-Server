@@ -80,3 +80,94 @@ exports.sendBookingConfirmation = async (booking, user) => {
     return false;
   }
 };
+
+// Send password reset OTP email
+exports.sendPasswordResetOTP = async (user, otp) => {
+  try {
+    console.log("Attempting to send password reset OTP email:");
+    console.log("User:", { name: user.name, email: user.email });
+    console.log("OTP:", otp);
+
+    const mailOptions = {
+      from: config.EMAIL_FROM,
+      to: user.email,
+      subject: "Password Reset OTP - Swift Ride",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #333; text-align: center;">Password Reset Request</h1>
+          <p>Dear ${user.name},</p>
+          <p>We received a request to reset your password for your Swift Ride account.</p>
+          <p>Your OTP (One-Time Password) is:</p>
+          <div style="background-color: #f4f4f4; padding: 20px; text-align: center; margin: 20px 0;">
+            <h2 style="color: #007bff; font-size: 32px; margin: 0; letter-spacing: 5px;">${otp}</h2>
+          </div>
+          <p><strong>Important:</strong></p>
+          <ul>
+            <li>This OTP will expire in 2 minutes</li>
+            <li>If you didn't request this password reset, please ignore this email</li>
+            <li>Never share this OTP with anyone</li>
+          </ul>
+          <p>If you have any questions, please contact our support team.</p>
+          <p>Thank you,<br>Swift Ride Team</p>
+        </div>
+      `,
+    };
+
+    console.log("Sending password reset OTP email with options:", mailOptions);
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password reset OTP email sent successfully:", info.response);
+    console.log("Message ID:", info.messageId);
+
+    return true;
+  } catch (error) {
+    console.error("Error sending password reset OTP email:", error);
+    if (error.code === "EAUTH") {
+      console.error("Authentication failed. Please check email credentials.");
+    }
+    return false;
+  }
+};
+
+// Send password reset confirmation email
+exports.sendPasswordResetConfirmation = async (user) => {
+  try {
+    console.log("Attempting to send password reset confirmation email:");
+    console.log("User:", { name: user.name, email: user.email });
+
+    const mailOptions = {
+      from: config.EMAIL_FROM,
+      to: user.email,
+      subject: "Password Reset Successful - Swift Ride",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #28a745; text-align: center;">Password Reset Successful</h1>
+          <p>Dear ${user.name},</p>
+          <p>Your password has been successfully reset for your Swift Ride account.</p>
+          <p>If you did not perform this action, please contact our support team immediately.</p>
+          <p>For security reasons, we recommend:</p>
+          <ul>
+            <li>Using a strong, unique password</li>
+            <li>Enabling two-factor authentication if available</li>
+            <li>Regularly updating your password</li>
+          </ul>
+          <p>Thank you,<br>Swift Ride Team</p>
+        </div>
+      `,
+    };
+
+    console.log("Sending password reset confirmation email with options:", mailOptions);
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password reset confirmation email sent successfully:", info.response);
+    console.log("Message ID:", info.messageId);
+
+    return true;
+  } catch (error) {
+    console.error("Error sending password reset confirmation email:", error);
+    if (error.code === "EAUTH") {
+      console.error("Authentication failed. Please check email credentials.");
+    }
+    return false;
+  }
+};
