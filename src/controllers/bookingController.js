@@ -17,6 +17,7 @@ exports.createBooking = async (req, res) => {
       dropLocation,
       notes,
       sharedRide,
+      paymentInfo,
     } = req.body;
 
     console.log("Creating booking with data:", {
@@ -28,6 +29,16 @@ exports.createBooking = async (req, res) => {
       dropLocation,
       notes,
       sharedRide,
+      paymentInfo: paymentInfo
+        ? {
+            paymentMethod: paymentInfo.paymentMethod,
+            cardName: paymentInfo.cardName,
+            maskedCardNumber: paymentInfo.maskedCardNumber,
+            expiryDate: paymentInfo.expiryDate,
+            saveCard: paymentInfo.saveCard,
+            paymentStatus: paymentInfo.paymentStatus,
+          }
+        : null,
     });
 
     // Validate dates
@@ -74,8 +85,8 @@ exports.createBooking = async (req, res) => {
 
     console.log("Creating booking with user:", req.user._id);
 
-    // Create booking with confirmed status
-    const booking = await Booking.create({
+    // Prepare booking data
+    const bookingData = {
       user: req.user._id,
       vehicle: vehicleId,
       startDate,
@@ -94,7 +105,26 @@ exports.createBooking = async (req, res) => {
         : {
             enabled: false,
           },
-    });
+    };
+
+    // Add payment info if provided
+    if (paymentInfo) {
+      bookingData.paymentInfo = {
+        paymentMethod: paymentInfo.paymentMethod,
+        cardName: paymentInfo.cardName,
+        maskedCardNumber: paymentInfo.maskedCardNumber,
+        expiryDate: paymentInfo.expiryDate,
+        saveCard: paymentInfo.saveCard,
+        paymentDate: paymentInfo.paymentDate
+          ? new Date(paymentInfo.paymentDate)
+          : new Date(),
+        paymentStatus: paymentInfo.paymentStatus || "completed",
+        transactionId: paymentInfo.transactionId,
+      };
+    }
+
+    // Create booking
+    const booking = await Booking.create(bookingData);
 
     // Populate vehicle details for the response and email
     await booking.populate([

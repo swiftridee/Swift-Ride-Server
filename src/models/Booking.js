@@ -65,6 +65,42 @@ const bookingSchema = new mongoose.Schema(
         email: String,
       },
     },
+    paymentInfo: {
+      paymentMethod: {
+        type: String,
+        enum: ["credit", "paypal", "cod"],
+        required: true,
+      },
+      cardName: {
+        type: String,
+        trim: true,
+      },
+      maskedCardNumber: {
+        type: String,
+        trim: true,
+      },
+      expiryDate: {
+        type: String,
+        trim: true,
+      },
+      saveCard: {
+        type: Boolean,
+        default: false,
+      },
+      paymentDate: {
+        type: Date,
+        default: Date.now,
+      },
+      paymentStatus: {
+        type: String,
+        enum: ["pending", "completed", "failed", "refunded"],
+        default: "completed",
+      },
+      transactionId: {
+        type: String,
+        trim: true,
+      },
+    },
   },
   {
     timestamps: true,
