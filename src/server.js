@@ -66,21 +66,11 @@ mongoose
       const PORT = config.PORT || 5000;
       app.listen(PORT, () => {
         console.log(`Server is running in PRODUCTION on port ${PORT}`);
-        console.log("Available routes:");
-        console.log("- /api/auth/*");
-        console.log("- /api/admin/*");
-        console.log("- /api/bookings/*");
-        console.log("- /api/vehicles/*");
       });
     } else {
       const PORT = config.PORT || 5000;
       app.listen(PORT, () => {
         console.log(`Server is running in DEVELOPMENT on port ${PORT}`);
-        console.log("Available routes:");
-        console.log("- /api/auth/*");
-        console.log("- /api/admin/*");
-        console.log("- /api/bookings/*");
-        console.log("- /api/vehicles/*");
       });
     }
   })
