@@ -13,9 +13,9 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, city, cnic, gender } = req.body;
+    const { name, email, password, cnic, gender } = req.body;
 
-    console.log("Registration request body:", { name, email, city, cnic, gender });
+    console.log("Registration request body:", { name, email, cnic, gender });
 
     // Validate required fields
     if (!name || !email || !password ) {
@@ -59,7 +59,6 @@ exports.register = async (req, res) => {
       name: name.trim(),
       email: email.trim().toLowerCase(),
       password,
-      city: city.trim(),
       status: "active",
     };
 
