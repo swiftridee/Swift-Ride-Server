@@ -18,7 +18,7 @@ exports.register = async (req, res) => {
     console.log("Registration request body:", { name, email, city, cnic, gender });
 
     // Validate required fields
-    if (!name || !email || !password || !city) {
+    if (!name || !email || !password ) {
       return res.status(400).json({
         success: false,
         message: "Please provide all required fields",
