@@ -13,12 +13,12 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, cnic, gender } = req.body;
+    const { name, email, password, city, cnic, gender } = req.body;
 
-    console.log("Registration request body:", { name, email, cnic, gender });
+    console.log("Registration request body:", { name, email, city, cnic, gender });
 
     // Validate required fields
-    if (!name || !email || !password ) {
+    if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
         message: "Please provide all required fields",
@@ -61,6 +61,11 @@ exports.register = async (req, res) => {
       password,
       status: "active",
     };
+
+    // Add city if provided
+    if (city && city.trim() !== "") {
+      userData.city = city.trim();
+    }
 
     // Add CNIC if provided and not empty
     if (cnic && cnic.trim() !== "") {

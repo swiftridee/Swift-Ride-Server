@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema(
     },
     city: {
       type: String,
-      required: [true, "Please provide a city"],
       trim: true,
     },
     cnic: {
