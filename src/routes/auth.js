@@ -7,12 +7,15 @@ const {
   forgotPassword,
   verifyOTP,
   resetPassword,
+  updateProfile,
 } = require("../controllers/authController");
 
 // User routes
 router.post("/register", register);
 router.post("/login", login);
 
+// Update User
+router.put("/profile", updateProfile);
 // Password reset routes
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOTP);

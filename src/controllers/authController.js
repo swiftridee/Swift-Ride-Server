@@ -1,7 +1,11 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 const User = require("../models/User");
-const { sendPasswordResetOTP, sendPasswordResetConfirmation, sendWelcomeEmail } = require("../utils/emailService");
+const {
+  sendPasswordResetOTP,
+  sendPasswordResetConfirmation,
+  sendWelcomeEmail,
+} = require("../utils/emailService");
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -14,8 +18,6 @@ const generateToken = (id) => {
 exports.register = async (req, res) => {
   try {
     const { name, email, password, city, cnic, gender } = req.body;
-
-    console.log("Registration request body:", { name, email, city, cnic, gender });
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -287,44 +289,37 @@ exports.getCurrentUser = async (req, res) => {
 // Update user profile
 exports.updateProfile = async (req, res) => {
   try {
+    const userId = req.body._id;
     const { name, city, cnic, gender } = req.body;
-    const userId = req.user.id;
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+    // Build update object
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (city) updateFields.city = city;
+    if (cnic) updateFields.cnic = cnic;
+    if (gender) updateFields.gender = gender;
+
+    // Update user in DB
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-
-    // Update fields
-    if (name) user.name = name;
-    if (city) user.city = city;
-    if (cnic) user.cnic = cnic;
-    if (gender) user.gender = gender;
-
-    await user.save();
 
     res.json({
       success: true,
-      data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          city: user.city,
-          role: user.role,
-          status: user.status,
-          cnic: user.cnic,
-          gender: user.gender,
-        },
-      },
+      data: { user: updatedUser },
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error updating profile",
+      message: "Failed to update profile",
       error: error.message,
     });
   }
@@ -364,7 +359,7 @@ exports.forgotPassword = async (req, res) => {
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    
+
     // Set OTP expiry to 2 minutes from now
     const otpExpiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
 
@@ -375,7 +370,7 @@ exports.forgotPassword = async (req, res) => {
 
     // Send OTP email
     const emailSent = await sendPasswordResetOTP(user, otp);
-    
+
     if (!emailSent) {
       return res.status(500).json({
         success: false,
@@ -536,7 +531,8 @@ exports.resetPassword = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Password reset successfully. You can now login with your new password.",
+      message:
+        "Password reset successfully. You can now login with your new password.",
     });
   } catch (error) {
     console.error("Reset password error:", error);
