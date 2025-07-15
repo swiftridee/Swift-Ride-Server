@@ -261,7 +261,7 @@ exports.adminLogin = async (req, res) => {
 // Get current user
 exports.getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.params.id).select("-password");
     res.json({
       success: true,
       data: {

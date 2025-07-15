@@ -8,6 +8,7 @@ const {
   verifyOTP,
   resetPassword,
   updateProfile,
+  getCurrentUser,
 } = require("../controllers/authController");
 
 // User routes
@@ -16,6 +17,7 @@ router.post("/login", login);
 
 // Update User
 router.put("/profile", updateProfile);
+router.get("/profile/:id", getCurrentUser);
 // Password reset routes
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOTP);
