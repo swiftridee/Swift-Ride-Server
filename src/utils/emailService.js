@@ -24,18 +24,8 @@ transporter.verify(function (error, success) {
 // Send booking confirmation email
 exports.sendBookingConfirmation = async (booking, user) => {
   try {
-    console.log("Attempting to send email with the following data:");
-    console.log("User:", { name: user.name, email: user.email });
-    console.log("Booking ID:", booking._id);
-    console.log("Email Config:", {
-      host: config.EMAIL_HOST,
-      port: config.EMAIL_PORT,
-      user: config.EMAIL_USER,
-      from: config.EMAIL_FROM,
-    });
-
-    const startDate = new Date(booking.startDate).toLocaleString();
-    const endDate = new Date(booking.endDate).toLocaleString();
+    const startDate = booking.startDate;
+    const endDate = booking.endDate;
 
     const mailOptions = {
       from: config.EMAIL_FROM,
@@ -52,7 +42,7 @@ exports.sendBookingConfirmation = async (booking, user) => {
           <li><strong>End Date:</strong> ${endDate}</li>
           <li><strong>Pickup Location:</strong> ${booking.pickupLocation}</li>
           <li><strong>Drop Location:</strong> ${booking.dropLocation}</li>
-          <li><strong>Total Price:</strong> $${booking.price}</li>
+          <li><strong>Total Price:</strong> RS: ${booking.price}</li>
         </ul>
         <p>If you have any questions, please don't hesitate to contact us.</p>
         <p>Thank you for choosing Swift Ride!</p>
