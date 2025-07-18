@@ -18,6 +18,7 @@ router.route("/").post(createBooking).get(getMyBookings);
 
 router.route("/:id").get(getBooking);
 
+// Cancel a booking
 router.put("/:id/cancel", cancelBooking);
 
 module.exports = router;

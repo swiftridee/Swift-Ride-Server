@@ -243,11 +243,16 @@ exports.cancelBooking = async (req, res) => {
     booking.status = "cancelled";
     await booking.save();
 
-    res.json({
+    // Send cancellation email
+    await emailService.sendBookingCancellation(booking, booking.user);
+
+    res.status(200).json({
       success: true,
+      message: "Booking canceled successfully",
       data: booking,
     });
   } catch (error) {
+    console.error("Error canceling booking:", error);
     res.status(500).json({
       success: false,
       message: "Error cancelling booking",

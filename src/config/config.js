@@ -24,4 +24,5 @@ module.exports = {
   EMAIL_USER: "contactswiftride@gmail.com",
   EMAIL_PASS: "tovr clqq nysw aeev",
   EMAIL_FROM: "Swift Ride <contactswiftride@gmail.com>",
+  CONTACT_EMAIL: "contactswiftride@gmail.com", // Add this line for contact form submissions
 };

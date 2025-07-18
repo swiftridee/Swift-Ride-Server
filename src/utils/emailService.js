@@ -156,10 +156,16 @@ exports.sendPasswordResetConfirmation = async (user) => {
       `,
     };
 
-    console.log("Sending password reset confirmation email with options:", mailOptions);
+    console.log(
+      "Sending password reset confirmation email with options:",
+      mailOptions
+    );
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("Password reset confirmation email sent successfully:", info.response);
+    console.log(
+      "Password reset confirmation email sent successfully:",
+      info.response
+    );
     console.log("Message ID:", info.messageId);
 
     return true;
@@ -253,6 +259,70 @@ exports.sendWelcomeEmail = async (user) => {
     if (error.code === "EAUTH") {
       console.error("Authentication failed. Please check email credentials.");
     }
+    return false;
+  }
+};
+
+// Send contact us email
+exports.sendContactUsEmail = async (contact) => {
+  try {
+    const mailOptions = {
+      from: config.EMAIL_FROM,
+      to: config.CONTACT_EMAIL || config.EMAIL_FROM, // fallback to default if not set
+      subject: `Contact Us Message from ${contact.name}`,
+      html: `
+        <h2>Contact Us Submission</h2>
+        <p><strong>Name:</strong> ${contact.name}</p>
+        <p><strong>Email:</strong> ${contact.email}</p>
+        <p><strong>Subject:</strong> ${contact.subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${contact.message}</p>
+      `,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Contact Us email sent successfully:", info.response);
+    return true;
+  } catch (error) {
+    console.error("Error sending Contact Us email:", error);
+    return false;
+  }
+};
+
+// Send booking cancellation email
+exports.sendBookingCancellation = async (booking, user) => {
+  try {
+    const mailOptions = {
+      from: config.EMAIL_FROM,
+      to: user.email,
+      subject: "Booking Cancellation Notice - Swift Ride",
+      html: `
+        <h1>Booking Canceled</h1>
+        <p>Dear ${user.name},</p>
+        <p>We regret to inform you that your booking has been canceled. Here are the details:</p>
+        <ul>
+          <li><strong>Booking ID:</strong> ${booking._id}</li>
+          <li><strong>Vehicle:</strong> ${booking.vehicle.brand} ${
+        booking.vehicle.name
+      }</li>
+          <li><strong>Start Date:</strong> ${new Date(
+            booking.startDate
+          ).toLocaleString()}</li>
+          <li><strong>End Date:</strong> ${new Date(
+            booking.endDate
+          ).toLocaleString()}</li>
+          <li><strong>Pickup Location:</strong> ${booking.pickupLocation}</li>
+          <li><strong>Drop Location:</strong> ${booking.dropLocation}</li>
+        </ul>
+        <p>If you have any questions or need further assistance, please contact our support team.</p>
+        <p>We apologize for any inconvenience caused.</p>
+        <p>Thank you,<br>Swift Ride Team</p>
+      `,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Booking cancellation email sent successfully:", info.response);
+    return true;
+  } catch (error) {
+    console.error("Error sending booking cancellation email:", error);
     return false;
   }
 };

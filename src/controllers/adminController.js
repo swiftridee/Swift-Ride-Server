@@ -376,7 +376,7 @@ exports.getStats = async (req, res) => {
 exports.updateUserDetails = async (req, res) => {
   try {
     const userId = req.params.id;
-    const { status,name, city, cnic, gender } = req.body;
+    const { status, name, city, cnic, gender } = req.body;
 
     // Check if user exists
     const user = await User.findById(userId);

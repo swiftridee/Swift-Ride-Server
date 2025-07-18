@@ -9,6 +9,7 @@ const {
   resetPassword,
   updateProfile,
   getCurrentUser,
+  contactUs,
 } = require("../controllers/authController");
 
 // User routes
@@ -22,7 +23,8 @@ router.get("/profile/:id", getCurrentUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
-
+// Contact Us route
+router.post("/contact", contactUs);
 // Admin routes
 router.post("/admin/login", adminLogin);
 

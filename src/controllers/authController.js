@@ -6,6 +6,7 @@ const {
   sendPasswordResetConfirmation,
   sendWelcomeEmail,
 } = require("../utils/emailService");
+const emailService = require("../utils/emailService");
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -541,5 +542,41 @@ exports.resetPassword = async (req, res) => {
       message: "Error resetting password",
       error: error.message,
     });
+  }
+};
+
+// @desc    Handle contact us form submission
+// @route   POST /api/contact
+// @access  Public
+exports.contactUs = async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+    if (!name || !email || !subject || !message) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required." });
+    }
+    const result = await emailService.sendContactUsEmail({
+      name,
+      email,
+      subject,
+      message,
+    });
+    if (result) {
+      return res.status(200).json({
+        success: true,
+        message: "Your message has been sent successfully.",
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to send your message. Please try again later.",
+      });
+    }
+  } catch (error) {
+    console.error("Error in contactUs:", error);
+    res
+      .status(500)
+      .json({ success: false, message: error.message || "Server error." });
   }
 };
