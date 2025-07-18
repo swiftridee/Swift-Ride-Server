@@ -10,7 +10,9 @@ const {
   updateProfile,
   getCurrentUser,
   contactUs,
+  updatePassword,
 } = require("../controllers/authController");
+const { protect } = require("../middleware/auth");
 
 // User routes
 router.post("/register", register);
@@ -27,5 +29,8 @@ router.post("/reset-password", resetPassword);
 router.post("/contact", contactUs);
 // Admin routes
 router.post("/admin/login", adminLogin);
+
+// Update password (protected)
+router.put("/update-password", protect, updatePassword);
 
 module.exports = router;
