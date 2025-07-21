@@ -80,15 +80,12 @@ exports.register = async (req, res) => {
       userData.gender = gender;
     }
 
-    console.log("Creating user with data:", userData);
-
     // Create new user
     const user = await User.create(userData);
 
     // Send welcome email (non-blocking)
     try {
       await sendWelcomeEmail(user);
-      console.log("Welcome email sent successfully to:", user.email);
     } catch (emailError) {
       console.error("Failed to send welcome email:", emailError.message);
       // Don't fail registration if email fails
@@ -622,11 +619,9 @@ exports.updatePassword = async (req, res) => {
 
     res.json({ success: true, message: "Password updated successfully." });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: error.message || "Failed to update password.",
-      });
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to update password.",
+    });
   }
 };

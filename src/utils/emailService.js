@@ -17,7 +17,6 @@ transporter.verify(function (error, success) {
   if (error) {
     console.error("SMTP Connection Error:", error);
   } else {
-    console.log("SMTP Server is ready to send messages");
   }
 });
 
@@ -49,16 +48,11 @@ exports.sendBookingConfirmation = async (booking, user) => {
       `,
     };
 
-    console.log("Sending email with options:", mailOptions);
-
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully:", info.response);
-    console.log("Message ID:", info.messageId);
 
     // Update booking to mark email as sent
     if (booking.updateOne) {
       await booking.updateOne({ emailSent: true });
-      console.log("Booking updated to mark email as sent");
     }
 
     return true;
@@ -74,10 +68,6 @@ exports.sendBookingConfirmation = async (booking, user) => {
 // Send password reset OTP email
 exports.sendPasswordResetOTP = async (user, otp) => {
   try {
-    console.log("Attempting to send password reset OTP email:");
-    console.log("User:", { name: user.name, email: user.email });
-    console.log("OTP:", otp);
-
     const mailOptions = {
       from: config.EMAIL_FROM,
       to: user.email,
@@ -103,11 +93,7 @@ exports.sendPasswordResetOTP = async (user, otp) => {
       `,
     };
 
-    console.log("Sending password reset OTP email with options:", mailOptions);
-
     const info = await transporter.sendMail(mailOptions);
-    console.log("Password reset OTP email sent successfully:", info.response);
-    console.log("Message ID:", info.messageId);
 
     return true;
   } catch (error) {
@@ -122,9 +108,6 @@ exports.sendPasswordResetOTP = async (user, otp) => {
 // Send password reset confirmation email
 exports.sendPasswordResetConfirmation = async (user) => {
   try {
-    console.log("Attempting to send password reset confirmation email:");
-    console.log("User:", { name: user.name, email: user.email });
-
     const mailOptions = {
       from: config.EMAIL_FROM,
       to: user.email,
@@ -146,17 +129,7 @@ exports.sendPasswordResetConfirmation = async (user) => {
       `,
     };
 
-    console.log(
-      "Sending password reset confirmation email with options:",
-      mailOptions
-    );
-
     const info = await transporter.sendMail(mailOptions);
-    console.log(
-      "Password reset confirmation email sent successfully:",
-      info.response
-    );
-    console.log("Message ID:", info.messageId);
 
     return true;
   } catch (error) {
@@ -171,9 +144,6 @@ exports.sendPasswordResetConfirmation = async (user) => {
 // Send welcome email to new user
 exports.sendWelcomeEmail = async (user) => {
   try {
-    console.log("Attempting to send welcome email:");
-    console.log("User:", { name: user.name, email: user.email });
-
     const mailOptions = {
       from: config.EMAIL_FROM,
       to: user.email,
@@ -237,11 +207,7 @@ exports.sendWelcomeEmail = async (user) => {
       `,
     };
 
-    console.log("Sending welcome email with options:", mailOptions);
-
     const info = await transporter.sendMail(mailOptions);
-    console.log("Welcome email sent successfully:", info.response);
-    console.log("Message ID:", info.messageId);
 
     return true;
   } catch (error) {
@@ -270,7 +236,6 @@ exports.sendContactUsEmail = async (contact) => {
       `,
     };
     const info = await transporter.sendMail(mailOptions);
-    console.log("Contact Us email sent successfully:", info.response);
     return true;
   } catch (error) {
     console.error("Error sending Contact Us email:", error);
@@ -280,6 +245,7 @@ exports.sendContactUsEmail = async (contact) => {
 
 // Send booking cancellation email
 exports.sendBookingCancellation = async (booking, user) => {
+  console.log("booking,user", booking, user);
   try {
     const mailOptions = {
       from: config.EMAIL_FROM,
@@ -313,6 +279,36 @@ exports.sendBookingCancellation = async (booking, user) => {
     return true;
   } catch (error) {
     console.error("Error sending booking cancellation email:", error);
+    return false;
+  }
+};
+
+// Send newsletter subscription confirmation email
+exports.sendNewsletterSubscription = async (email) => {
+  try {
+    const mailOptions = {
+      from: config.EMAIL_FROM,
+      to: email,
+      subject: "Thank you for subscribing to Swift Ride Newsletter!",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
+          <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h1 style="color: #007bff; margin: 0; font-size: 24px;">Welcome to the Swift Ride Newsletter!</h1>
+            <p style="color: #555; line-height: 1.6; margin: 20px 0;">
+              Thank you for subscribing to our newsletter. You'll now receive updates, special offers, and the latest news from Swift Ride.
+            </p>
+            <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
+              If you have any questions, feel free to reply to this email or contact our support team.
+            </p>
+            <p style="color: #6c757d; font-size: 14px;">Thank you for joining us!<br>Swift Ride Team</p>
+          </div>
+        </div>
+      `,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.error("Error sending newsletter subscription email:", error);
     return false;
   }
 };

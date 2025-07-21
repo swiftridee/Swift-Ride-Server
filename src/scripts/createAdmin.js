@@ -6,12 +6,10 @@ const createAdmin = async () => {
   try {
     // Connect to MongoDB
     await mongoose.connect(config.MONGODB_URI);
-    console.log("Connected to MongoDB");
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({ email: config.ADMIN_EMAIL });
     if (existingAdmin) {
-      console.log("Admin user already exists");
       process.exit(0);
     }
 
@@ -26,7 +24,6 @@ const createAdmin = async () => {
       cnic: "42201-0000000-0",
     });
 
-    console.log("Admin user created successfully:", admin.email);
     process.exit(0);
   } catch (error) {
     console.error("Error creating admin user:", error);

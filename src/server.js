@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const bookingRoutes = require("./routes/bookings");
 const vehicleRoutes = require("./routes/vehicles");
+const newsletterRoutes = require("./routes/newsletter");
 
 // Initialize express app
 const app = express();
@@ -22,7 +23,6 @@ app.use(morgan("dev"));
 
 // Debug middleware to log requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
   next();
 });
 
@@ -36,10 +36,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/newsletter", newsletterRoutes);
 
 // 404 handler
 app.use((req, res) => {
-  console.log("404 Not Found:", req.originalUrl);
   res.status(404).json({
     success: false,
     message: `Route ${req.originalUrl} not found`,

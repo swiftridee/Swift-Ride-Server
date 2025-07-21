@@ -96,6 +96,10 @@ const bookingSchema = new mongoose.Schema(
         enum: ["pending", "completed", "failed", "refunded"],
         default: "completed",
       },
+      payment: {
+        type: String,
+        defualt: "0",
+      },
       transactionId: {
         type: String,
         trim: true,

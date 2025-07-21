@@ -1,6 +1,5 @@
 const Booking = require("../models/Booking");
 const Vehicle = require("../models/Vehicle");
-const User = require("../models/User");
 const emailService = require("../utils/emailService");
 
 // @desc    Create a new booking
@@ -19,27 +18,6 @@ exports.createBooking = async (req, res) => {
       sharedRide,
       paymentInfo,
     } = req.body;
-
-    console.log("Creating booking with data:", {
-      vehicleId,
-      startDate,
-      endDate,
-      includeDriver,
-      pickupLocation,
-      dropLocation,
-      notes,
-      sharedRide,
-      paymentInfo: paymentInfo
-        ? {
-            paymentMethod: paymentInfo.paymentMethod,
-            cardName: paymentInfo.cardName,
-            maskedCardNumber: paymentInfo.maskedCardNumber,
-            expiryDate: paymentInfo.expiryDate,
-            saveCard: paymentInfo.saveCard,
-            paymentStatus: paymentInfo.paymentStatus,
-          }
-        : null,
-    });
 
     // Validate dates
     const start = new Date(startDate);
@@ -77,14 +55,6 @@ exports.createBooking = async (req, res) => {
       });
     }
 
-    // Calculate total price using the vehicle's calculateRentalPrice method
-    const totalPrice = vehicle.calculateRentalPrice(
-      durationInHours,
-      includeDriver
-    );
-
-    console.log("Creating booking with user:", req.user._id);
-
     // Prepare booking data
     const bookingData = {
       user: req.user._id,
@@ -92,7 +62,7 @@ exports.createBooking = async (req, res) => {
       startDate,
       endDate,
       includeDriver,
-      price: totalPrice,
+      price: paymentInfo?.payment,
       status: "confirmed", // Set status as confirmed
       pickupLocation,
       dropLocation,
@@ -134,8 +104,6 @@ exports.createBooking = async (req, res) => {
 
     // Send confirmation email
     await emailService.sendBookingConfirmation(booking, booking.user);
-
-    console.log("Booking created successfully:", booking._id);
 
     res.status(201).json({
       success: true,
@@ -214,8 +182,10 @@ exports.getBooking = async (req, res) => {
 // @access  Private
 exports.cancelBooking = async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id);
-
+    const booking = await Booking.findById(req.params.id)
+      .populate("user")
+      .populate("vehicle");
+    console.log("booking from server", booking);
     if (!booking) {
       return res.status(404).json({
         success: false,
@@ -224,7 +194,7 @@ exports.cancelBooking = async (req, res) => {
     }
 
     // Check if the booking belongs to the user
-    if (booking.user.toString() !== req.user._id.toString()) {
+    if (booking.user?._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
         message: "Not authorized to cancel this booking",
